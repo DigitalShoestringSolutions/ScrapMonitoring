@@ -16,6 +16,23 @@ services:
         restart: unless-stopped
         depends_on:
             - "timeseries-db"
+            - "reasons-db"
+    reasons-db:
+        extends:
+            file: reasons_sds/app.yml
+            service: app
+        networks:
+            internal:
+                aliases:
+                    - reasons-db.docker.local
+        logging:
+                driver: syslog
+                options:
+                        tag: docker-reasons-db
+        env_file:
+            - django_secret_key
+        restart: unless-stopped
+        
     timeseries-db:
         extends:
             file: timeseries_sds/app.yml
@@ -77,3 +94,4 @@ services:
             - "mqtt_broker"
 networks:
     internal:
+        name: shoestring-internal
