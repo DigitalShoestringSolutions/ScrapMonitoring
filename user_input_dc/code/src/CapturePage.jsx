@@ -1,20 +1,29 @@
 import React from 'react'
-import { Container, Pagination, Popover, OverlayTrigger, Card, Col, Row, Button, Modal, Table, Spinner, InputGroup, Form, DropdownButton, Dropdown } from 'react-bootstrap'
+import { Container, Pagination, Card, Col, Row, Button, Modal, Table, Spinner, InputGroup, Form, DropdownButton, Dropdown } from 'react-bootstrap'
 import { useParams } from 'react-router-dom'
 import { useMQTTSend } from './MQTTContext';
 import APIBackend from './RestAPI'
 import * as dayjs from 'dayjs'
+import { useToastDispatch, add_toast } from "./ToastContext";
 
 //todo reasons modification page (download new config file - save in right place)
 //todo cancel
 
 const STATUS = { pass: "pass", rework: "rework", scrap: "scrap" }
 
-export function CapturePage({ config }) {
+function groupBy(xs, key) {
+  return xs.reduce(function (rv, x) {
+    (rv[x[key]] = rv[x[key]] || []).push(x);
+    return rv;
+  }, {});
+};
+
+export function CapturePage({ config, operation_list}) {
   const inputRef = React.useRef(null);
 
   let params = useParams();
-  const location = params.location
+  const operation_id = Number(params.operation_id)
+  let operation = operation_list.find(elem => elem.id === operation_id)
   const [part, setPart] = React.useState("")
 
   const sendJsonMessage = useMQTTSend()
@@ -25,55 +34,65 @@ export function CapturePage({ config }) {
   let [showModal, setShowModal] = React.useState(false);
   let [modalType, setModalType] = React.useState(STATUS.pass)
   let [eventList, setEventList] = React.useState([])
-  let [REASONS, SETREASONS] = React.useState([])
+  let [reasons, setReasons] = React.useState([])
+
+  let toast_dispatch = useToastDispatch()
 
   React.useEffect(() => {
     let do_load = async () => {
       setPending(true)
-      let response = await APIBackend.api_get('http://' + document.location.host + '/config/' + location+'.json');
-      let reasons
-      if (response.status === 200) {
-        reasons = response.payload?.reasons;
+      let url = config.reasons_api.host + (config.reasons_api.port ? ":" + config.reasons_api.port : "")
+      let response = await APIBackend.api_get('http://' + url + '/reasons/' + operation_id);
+       if (response.status === 200) {
+        let raw_reasons = response.payload;
+        let reasons = groupBy(raw_reasons,"type_tag")
+        console.log("Loaded Reasons:",raw_reasons,reasons)
+        setReasons(reasons)
       } else {
-        console.error("Unable to load reasons for location " + location + " using default list")
-        reasons = config.reasons
+        console.error("Unable to load reasons for operation " + operation_id + " using default list")
+        setError("Unable to load error reasons for this operation - please try refresh")
       }
-      reasons = reasons ?? { rework: [], scrap: [] }
-      SETREASONS(reasons)
       setLoaded(true)
     }
     if (!loaded && !pending) {
       do_load()
     }
-  }, [loaded, pending, location, config])
+  }, [loaded, pending, config, operation_id])
 
   //todo: only add to event list if sent
-  const handle_event = async (event_type, reason = null) => {
+  const handle_event = async (event_type, reason) => {
     if (!part) {
-      //todo toast
+      add_toast(toast_dispatch, { header: "Error", body: "Please Select Part" })
       return
     }
 
-    let base_message = { part: part, location: location, outcome: event_type }
-    if (reason)
-      base_message = { ...base_message, reason: reason }
+    if(event_type===STATUS.pass){
+      reason="pass";
+    }
+
+    let base_message = { part: part, operation: operation.name, outcome:event_type, count: 1}
+    
+    base_message = { ...base_message, reason: reason }
     let timestamp = dayjs()
 
     let topic = event_type
     if (!Array.isArray(topic))
       topic = [topic]
 
-    topic = location ? [location, ...topic] : ["unspecified", ...topic]
+    topic.unshift("single");
+
+    topic.unshift(operation.name ? operation.name : "unspecified");
 
     let payload = { ...base_message, timestamp: timestamp.format() }
 
     try {
       sendJsonMessage(topic, payload);
       setEventList(prev => [{ ...base_message, timestamp: timestamp }, ...prev])
+      add_toast(toast_dispatch, { header: "Sent"})
     }
     catch (err) {
       console.error(err)
-      //todo: toast
+      add_toast(toast_dispatch, { header: "Error", body: err })
     }
     finally {
       if (config?.capture_page?.clear_part_on_submit) {
@@ -95,7 +114,7 @@ export function CapturePage({ config }) {
   }
 
   const handleReasonClick = (id) => {
-    let reason = REASONS[modalType].find(elem => elem.id === id).text
+    let reason = reasons[modalType].find(elem => elem.id === id).text
     setShowModal(false)
     handle_event(modalType, reason)
   }
@@ -110,7 +129,7 @@ export function CapturePage({ config }) {
     return <>
       <Card className='mt-2'>
         <Card.Header className='text-center'>
-          <h1>Defect Tracking {location ? "- " + location : ""}</h1>
+          <h1>{operation?.name}</h1>
         </Card.Header>
         <Card.Body>
           <PartBar
@@ -127,7 +146,7 @@ export function CapturePage({ config }) {
         show={showModal}
         type={modalType}
         handleClick={handleReasonClick}
-        reasons={REASONS}
+        reasons={reasons}
         handleClose={() => setShowModal(false)}
         fullscreen={config?.capture_page?.fullscreen_modal}
       />
@@ -343,4 +362,3 @@ function paginate(array, page_size, page_number) {
   // human-readable page numbers usually start with 1, so we reduce 1 in the first argument
   return array.slice((page_number - 1) * page_size, page_number * page_size);
 }
-

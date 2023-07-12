@@ -2,12 +2,12 @@ from django.contrib import admin
 from . import models
 import datetime
 import time
-
+from adminsortable.admin import SortableAdmin
 
 @admin.register(models.Operation)
-class OperationAdmin(admin.ModelAdmin):
+class OperationAdmin(SortableAdmin):
     list_display = ['id', 'name']
-    ordering = ['id']
+    ordering = ['order']
     readonly_fields = ['id']
 
 

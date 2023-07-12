@@ -1,9 +1,18 @@
 from django.db import models
+from adminsortable.models import SortableMixin
 
+class SimpleModel(models.Model):
+    class Meta:
+        abstract = True
 
-class Operation(models.Model):
+class Operation(SimpleModel, SortableMixin):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=60, help_text="Name of the operation")
+    
+    order = models.PositiveIntegerField(default=0, editable=False)
+
+    class Meta:
+        ordering = ['order']
 
     def __str__(self):
         return self.name

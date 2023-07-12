@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'whitenoise',
     'rest_framework',
     'scrap_reasons',
+    'adminsortable',
 ]
 
 MIDDLEWARE = [

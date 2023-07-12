@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 9,
+  "id": 6,
   "links": [
     {
       "asDropdown": false,
@@ -99,8 +99,8 @@
         ]
       },
       "gridPos": {
-        "h": 19,
-        "w": 10,
+        "h": 16,
+        "w": 9,
         "x": 0,
         "y": 0
       },
@@ -188,9 +188,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
-        "w": 7,
-        "x": 10,
+        "h": 8,
+        "w": 8,
+        "x": 9,
         "y": 0
       },
       "id": 7,
@@ -283,7 +283,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
+        "h": 8,
         "w": 7,
         "x": 17,
         "y": 0
@@ -370,10 +370,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 7,
-        "x": 10,
-        "y": 10
+        "h": 8,
+        "w": 8,
+        "x": 9,
+        "y": 8
       },
       "id": 8,
       "options": {
@@ -465,10 +465,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
+        "h": 8,
         "w": 7,
         "x": 17,
-        "y": 10
+        "y": 8
       },
       "id": 6,
       "options": {
@@ -588,6 +588,6 @@
   "timezone": "",
   "title": "Overview",
   "uid": "YMtDdAX4k",
-  "version": 14,
+  "version": 2,
   "weekStart": ""
 }

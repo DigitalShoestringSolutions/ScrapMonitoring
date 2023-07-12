@@ -5,6 +5,6 @@ services:
             build: .
             volumes:
                 - /etc/localtime:/etc/localtime:ro
-                - ./config/:/usr/share/nginx/html/config/
+                - ./config/ui:/usr/share/nginx/html/config/
             ports:
                 - "80:80"

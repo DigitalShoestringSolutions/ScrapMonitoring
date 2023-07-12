@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 10,
+  "id": 7,
   "links": [
     {
       "asDropdown": false,
@@ -43,6 +43,17 @@
   ],
   "liveNow": false,
   "panels": [
+    {
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 18,
+      "title": "Row title",
+      "type": "row"
+    },
     {
       "datasource": {
         "type": "influxdb",
@@ -82,7 +93,7 @@
         "h": 4,
         "w": 12,
         "x": 0,
-        "y": 0
+        "y": 1
       },
       "id": 11,
       "options": {
@@ -180,7 +191,7 @@
         "h": 4,
         "w": 12,
         "x": 12,
-        "y": 0
+        "y": 1
       },
       "id": 16,
       "options": {
@@ -333,7 +344,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 4
+        "y": 5
       },
       "id": 6,
       "options": {
@@ -395,7 +406,7 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "stepBefore",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
@@ -437,7 +448,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 4
+        "y": 5
       },
       "id": 13,
       "options": {
@@ -448,7 +459,7 @@
           "showLegend": true
         },
         "tooltip": {
-          "mode": "single",
+          "mode": "multi",
           "sort": "none"
         }
       },
@@ -465,6 +476,80 @@
       "title": "Scrap Ratio by Operation",
       "transformations": [],
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 12
+      },
+      "id": 20,
+      "options": {
+        "calculate": false,
+        "cellGap": 0,
+        "color": {
+          "exponent": 0.5,
+          "fill": "dark-orange",
+          "mode": "scheme",
+          "reverse": false,
+          "scale": "exponential",
+          "scheme": "RdYlGn",
+          "steps": 64
+        },
+        "exemplars": {
+          "color": "rgba(255,0,255,0.7)"
+        },
+        "filterValues": {
+          "le": 1e-9
+        },
+        "legend": {
+          "show": true
+        },
+        "rowsFrame": {
+          "layout": "le"
+        },
+        "tooltip": {
+          "show": true,
+          "yHistogram": false
+        },
+        "yAxis": {
+          "axisPlacement": "left",
+          "reverse": false
+        }
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "influxdb"
+          },
+          "query": "from(bucket: \"fault_capture\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"reported_defect\")\r\n  |> filter(fn: (r) => r[\"part\"] == \"${part}\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"count\")\r\n  |> filter(fn: (r) => r[\"reason\"] != \"pass\")\r\n  |> keep(columns: [\"_time\",\"_value\",\"reason\"])\r\n  |> aggregateWindow(every: ${time_bucket}, fn: sum, createEmpty: true)\r\n  |> tail(n:100,offset:1) ",
+          "refId": "A"
+        }
+      ],
+      "title": "Reasons",
+      "type": "heatmap"
     },
     {
       "datasource": {
@@ -490,7 +575,7 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "stepBefore",
             "lineStyle": {
               "fill": "solid"
             },
@@ -532,10 +617,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 7,
         "w": 12,
         "x": 12,
-        "y": 11
+        "y": 12
       },
       "id": 15,
       "options": {
@@ -546,7 +631,7 @@
           "showLegend": true
         },
         "tooltip": {
-          "mode": "single",
+          "mode": "multi",
           "sort": "none"
         }
       },
@@ -564,7 +649,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "30m",
+  "refresh": "30s",
   "revision": 1,
   "schemaVersion": 38,
   "style": "dark",
@@ -575,7 +660,7 @@
     "list": [
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "123",
           "value": "123"
         },
@@ -600,8 +685,8 @@
       {
         "current": {
           "selected": true,
-          "text": "1h",
-          "value": "1h"
+          "text": "30m",
+          "value": "30m"
         },
         "hide": 0,
         "includeAll": false,
@@ -625,12 +710,12 @@
             "value": "15m"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "30m",
             "value": "30m"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "1h",
             "value": "1h"
           },
@@ -655,6 +740,6 @@
   "timezone": "",
   "title": "Part View",
   "uid": "F_M0yJXVz",
-  "version": 7,
+  "version": 6,
   "weekStart": ""
 }

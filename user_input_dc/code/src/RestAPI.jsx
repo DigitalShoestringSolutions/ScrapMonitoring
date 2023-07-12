@@ -42,7 +42,6 @@ async function api_call(url, settings = {}) {
   let defaults = {
     method: 'GET',
     mode: 'cors',
-    credentials: 'include',
     cache: 'no-cache',
     headers: {
       'Accept': 'application/json',
