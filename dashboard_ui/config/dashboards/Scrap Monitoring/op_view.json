@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 4,
+  "id": 3,
   "links": [
     {
       "asDropdown": false,
@@ -330,7 +330,7 @@
         ]
       },
       "gridPos": {
-        "h": 7,
+        "h": 12,
         "w": 12,
         "x": 0,
         "y": 4
@@ -379,152 +379,95 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "mode": "thresholds"
           },
           "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": -1,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
             },
-            "lineInterpolation": "stepBefore",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": 3600000,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "area"
-            }
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "transparent",
+                "color": "green",
                 "value": null
-              },
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
               {
-                "color": "#EAB839",
-                "value": 0.1
-              },
-              {
-                "color": "red",
-                "value": 0.15
+                "id": "custom.width",
+                "value": 170
               }
             ]
           },
-          "unit": "percentunit"
-        },
-        "overrides": []
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Count"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 57
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "outcome"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 82
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "part"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 207
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 7,
+        "h": 12,
         "w": 12,
         "x": 12,
         "y": 4
       },
-      "id": 13,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "influxdb"
-          },
-          "query": "from(bucket: \"fault_capture\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"reported_defect\")\n  |> filter(fn: (r) => r[\"operation\"] == \"${operation}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"count\")\n  |> drop(columns:[\"reason\"])\n  |> group(columns: [\"part\",\"outcome\"])\n  |> aggregateWindow(every: ${time_bucket}, fn: sum, createEmpty: true)\n  |> pivot(valueColumn: \"_value\", rowKey: [\"_time\"], columnKey: [\"outcome\"])\n  |> map(fn: (r) => ({ r with _value: if r.scrap > 0 then float(v:r.scrap)/float(v:r.pass) else 0.0}))\n  |> keep(columns: [\"part\",\"_time\",\"_value\"])\n  |> group(columns: [\"part\"])",
-          "refId": "A"
-        }
-      ],
-      "title": "Scrap Ratio by Part",
-      "transformations": [],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "influxdb"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "scaleDistribution": {
-              "type": "linear"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 11
-      },
       "id": 17,
       "options": {
-        "calculate": false,
-        "cellGap": 0,
-        "color": {
-          "exponent": 0.5,
-          "fill": "dark-orange",
-          "mode": "scheme",
-          "reverse": false,
-          "scale": "exponential",
-          "scheme": "RdYlGn",
-          "steps": 64
-        },
-        "exemplars": {
-          "color": "rgba(255,0,255,0.7)"
-        },
-        "filterValues": {
-          "le": 1e-9
-        },
-        "legend": {
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
           "show": true
         },
-        "rowsFrame": {
-          "layout": "le"
-        },
-        "tooltip": {
-          "show": true,
-          "yHistogram": false
-        },
-        "yAxis": {
-          "axisPlacement": "left",
-          "reverse": false
-        }
+        "showHeader": true,
+        "sortBy": []
       },
       "pluginVersion": "9.4.7",
       "targets": [
@@ -533,109 +476,48 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "query": "from(bucket: \"fault_capture\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"reported_defect\")\r\n  |> filter(fn: (r) => r[\"operation\"] == \"${operation}\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"count\")\r\n  |> filter(fn: (r) => r[\"reason\"] != \"pass\")\r\n  |> keep(columns: [\"_time\",\"_value\",\"reason\"])\r\n  |> aggregateWindow(every: ${time_bucket}, fn: sum, createEmpty: true)\r\n  |> tail(n:100,offset:1) ",
+          "query": "from(bucket: \"fault_capture\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"reported_defect\")\r\n  |> filter(fn: (r) => r[\"operation\"] == \"${operation}\")\r\n  |> filter(fn: (r) => r[\"outcome\"] != \"pass\")\r\n  \r\n  |> keep(columns: [\"_time\", \"_value\", \"part\", \"outcome\", \"reason\"])\r\n  |> group()\r\n",
           "refId": "A"
         }
       ],
-      "title": "Reasons",
-      "type": "heatmap"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "influxdb"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "stepBefore",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": 3600000,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "area"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
+      "title": "Recent Scrap & Rework",
+      "transformations": [
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
               {
-                "color": "transparent",
-                "value": null
-              },
-              {
-                "color": "#EAB839",
-                "value": 0.1
-              },
-              {
-                "color": "red",
-                "value": 0.15
+                "desc": true,
+                "field": "_time"
               }
             ]
-          },
-          "unit": "percentunit"
+          }
         },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 11
-      },
-      "id": 15,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "targets": [
         {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "influxdb"
-          },
-          "query": "from(bucket: \"fault_capture\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"reported_defect\")\n  |> filter(fn: (r) => r[\"operation\"] == \"${operation}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"count\")\n  |> drop(columns:[\"reason\"])\n  |> group(columns: [\"part\",\"outcome\"])\n  |> aggregateWindow(every: ${time_bucket}, fn: sum, createEmpty: true)\n  |> pivot(valueColumn: \"_value\", rowKey: [\"_time\"], columnKey: [\"outcome\"])\n  |> map(fn: (r) => ({ r with _value: if r.rework > 0 then float(v:r.rework)/float(v:r.pass) else 0.0}))\n  |> keep(columns: [\"part\",\"_time\",\"_value\"])\n  |> group(columns: [\"part\"])",
-          "refId": "A"
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "part": false
+            },
+            "indexByName": {
+              "_time": 0,
+              "_value": 2,
+              "outcome": 3,
+              "part": 1,
+              "reason": 4
+            },
+            "renameByName": {
+              "_time": "Time",
+              "_value": "Count",
+              "outcome": "Outcome",
+              "part": "Part",
+              "reason": "Reason"
+            }
+          }
         }
       ],
-      "title": "Rework Ratio by Part",
-      "type": "timeseries"
+      "type": "table"
     }
   ],
   "refresh": "30s",
@@ -650,8 +532,8 @@
       {
         "current": {
           "selected": true,
-          "text": "Operation 1",
-          "value": "Operation 1"
+          "text": "Machining",
+          "value": "Machining"
         },
         "datasource": {
           "type": "influxdb",
@@ -673,8 +555,8 @@
       {
         "current": {
           "selected": true,
-          "text": "30m",
-          "value": "30m"
+          "text": "5m",
+          "value": "5m"
         },
         "hide": 0,
         "includeAll": false,
@@ -683,7 +565,7 @@
         "name": "time_bucket",
         "options": [
           {
-            "selected": false,
+            "selected": true,
             "text": "5m",
             "value": "5m"
           },
@@ -698,7 +580,7 @@
             "value": "15m"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "30m",
             "value": "30m"
           },
@@ -721,7 +603,7 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
