@@ -55,28 +55,62 @@
           },
           "mappings": [],
           "thresholds": {
-            "mode": "percentage",
+            "mode": "absolute",
             "steps": [
               {
                 "color": "red",
                 "value": null
-              },
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "#EAB839",
-                "value": 10
-              },
-              {
-                "color": "orange",
-                "value": 20
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Good"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Rework"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Scrap"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 4,
@@ -106,13 +140,14 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "query": "from(bucket: \"fault_capture\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"reported_defect\")\n  |> filter(fn: (r) => r[\"operation\"] == \"${operation}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"count\")\n  |> keep(columns: [\"_time\",\"_value\",\"outcome\"])\n  |> sum(column: \"_value\")\n  |> pivot(valueColumn: \"_value\", columnKey: [\"outcome\"], rowKey: [])\n  |> map(fn: (r) => ({r with rework: if r.rework > 0 then r.rework  else 0, scrap: if r.scrap > 0 then r.scrap else 0}))",
+          "query": "from(bucket: \"fault_capture\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"reported_defect\")\n  |> filter(fn: (r) => r[\"operation\"] == \"${operation}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"count\")\n  |> keep(columns: [\"_time\",\"_value\",\"outcome\"])\n  |> sum(column: \"_value\")\n  |> pivot(valueColumn: \"_value\", columnKey: [\"outcome\"], rowKey: [])\n  |> map(fn: (r) => ({r with rework: if r.rework > 0 then r.rework  else 0, scrap: if r.scrap > 0 then r.scrap else 0, pass: if r.pass > 0 then r.pass else 0}))",
           "refId": "A"
         }
       ],
       "title": "Overall Totals",
       "transformations": [
         {
+          "disabled": true,
           "id": "configFromData",
           "options": {
             "configRefId": "A",
@@ -126,13 +161,31 @@
           }
         },
         {
+          "disabled": true,
           "id": "filterFieldsByName",
           "options": {
             "include": {
               "names": [
                 "rework",
-                "scrap"
+                "scrap",
+                "pass"
               ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "pass": 0,
+              "rework": 1,
+              "scrap": 2
+            },
+            "renameByName": {
+              "pass": "Good",
+              "rework": "Rework",
+              "scrap": "Scrap"
             }
           }
         }
@@ -520,7 +573,7 @@
       "type": "table"
     }
   ],
-  "refresh": "30s",
+  "refresh": "5s",
   "revision": 1,
   "schemaVersion": 38,
   "style": "dark",
@@ -531,7 +584,7 @@
     "list": [
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "Machining",
           "value": "Machining"
         },
@@ -555,8 +608,8 @@
       {
         "current": {
           "selected": true,
-          "text": "5m",
-          "value": "5m"
+          "text": "10m",
+          "value": "10m"
         },
         "hide": 0,
         "includeAll": false,
@@ -565,12 +618,12 @@
         "name": "time_bucket",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "5m",
             "value": "5m"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "10m",
             "value": "10m"
           },
@@ -603,13 +656,13 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Operation View",
   "uid": "JzdmAQB4k",
-  "version": 12,
+  "version": 16,
   "weekStart": ""
 }
