@@ -533,7 +533,7 @@
           "refId": "A"
         }
       ],
-      "title": "Recent Scrap & Rework",
+      "title": "Recent Scrap & Rework at ${operation}",
       "transformations": [
         {
           "id": "sortBy",
@@ -607,9 +607,9 @@
       },
       {
         "current": {
-          "selected": true,
-          "text": "10m",
-          "value": "10m"
+          "selected": false,
+          "text": "2h",
+          "value": "2h"
         },
         "hide": 0,
         "includeAll": false,
@@ -623,7 +623,7 @@
             "value": "5m"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "10m",
             "value": "10m"
           },
@@ -649,20 +649,20 @@
           }
         ],
         "query": "5m, 10m, 15m, 30m, 1h , 1d",
-        "queryValue": "",
+        "queryValue": "2h",
         "skipUrlSync": false,
         "type": "custom"
       }
     ]
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Operation View",
   "uid": "JzdmAQB4k",
-  "version": 16,
+  "version": 17,
   "weekStart": ""
 }
