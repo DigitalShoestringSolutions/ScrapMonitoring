@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 7,
+  "id": 5,
   "links": [
     {
       "asDropdown": false,
@@ -44,17 +44,6 @@
   "liveNow": false,
   "panels": [
     {
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 18,
-      "title": "Row title",
-      "type": "row"
-    },
-    {
       "datasource": {
         "type": "influxdb",
         "uid": "influxdb"
@@ -71,29 +60,63 @@
               {
                 "color": "red",
                 "value": null
-              },
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "#EAB839",
-                "value": 10
-              },
-              {
-                "color": "orange",
-                "value": 20
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pass"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "rework"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "scrap"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 4,
         "w": 12,
         "x": 0,
-        "y": 1
+        "y": 0
       },
       "id": 11,
       "options": {
@@ -124,26 +147,18 @@
       "title": "Overall Totals",
       "transformations": [
         {
-          "id": "configFromData",
+          "id": "organize",
           "options": {
-            "configRefId": "A",
-            "mappings": [
-              {
-                "fieldName": "pass",
-                "handlerKey": "max",
-                "reducerId": "lastNotNull"
-              }
-            ]
-          }
-        },
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "names": [
-                "rework",
-                "scrap"
-              ]
+            "excludeByName": {},
+            "indexByName": {
+              "pass": 0,
+              "rework": 1,
+              "scrap": 2
+            },
+            "renameByName": {
+              "pass": "Pass",
+              "rework": "Rework",
+              "scrap": "Scrap"
             }
           }
         }
@@ -191,7 +206,7 @@
         "h": 4,
         "w": 12,
         "x": 12,
-        "y": 1
+        "y": 0
       },
       "id": 16,
       "options": {
@@ -344,7 +359,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 5
+        "y": 4
       },
       "id": 6,
       "options": {
@@ -448,7 +463,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 5
+        "y": 4
       },
       "id": 13,
       "options": {
@@ -501,7 +516,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 12
+        "y": 11
       },
       "id": 20,
       "options": {
@@ -620,7 +635,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 12
+        "y": 11
       },
       "id": 15,
       "options": {
@@ -740,6 +755,6 @@
   "timezone": "",
   "title": "Part View",
   "uid": "F_M0yJXVz",
-  "version": 6,
+  "version": 3,
   "weekStart": ""
 }
