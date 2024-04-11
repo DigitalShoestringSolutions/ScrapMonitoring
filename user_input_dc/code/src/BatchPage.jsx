@@ -221,10 +221,10 @@ function ButtonBar({ handleButtonClick }) {
   return <Container fluid>
     <Row className='gx-2 gy-1'>
       <Col xs={12} sm={4} className="d-grid px-1">
-        <Button variant="success" size="lg" onClick={() => handleButtonClick(STATUS.pass)}>Add Good</Button>
+        <Button variant="success" size="lg" onClick={() => handleButtonClick(STATUS.pass)}>Add Pass First Time</Button>
       </Col>
       <Col xs={12} sm={4} className="d-grid px-1">
-        <Button variant="warning" size="lg" onClick={() => handleButtonClick(STATUS.rework)}>Add Rework</Button>
+        <Button variant="warning" size="lg" onClick={() => handleButtonClick(STATUS.rework)}>Add Pass After Rework</Button>
       </Col>
       <Col xs={12} sm={4} className="d-grid px-1">
         <Button variant="danger" size="lg" onClick={() => handleButtonClick(STATUS.scrap)}>Add Scrap</Button>
