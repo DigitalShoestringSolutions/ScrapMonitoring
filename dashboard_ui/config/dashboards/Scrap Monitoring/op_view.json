@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 4,
+  "id": 3,
   "links": [
     {
       "asDropdown": false,
@@ -60,23 +60,57 @@
               {
                 "color": "red",
                 "value": null
-              },
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "#EAB839",
-                "value": 10
-              },
-              {
-                "color": "orange",
-                "value": 20
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pass"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "rework"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "scrap"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 4,
@@ -106,33 +140,25 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "query": "from(bucket: \"fault_capture\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"reported_defect\")\n  |> filter(fn: (r) => r[\"operation\"] == \"${operation}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"count\")\n  |> keep(columns: [\"_time\",\"_value\",\"outcome\"])\n  |> sum(column: \"_value\")\n  |> pivot(valueColumn: \"_value\", columnKey: [\"outcome\"], rowKey: [])\n  |> map(fn: (r) => ({r with rework: if r.rework > 0 then r.rework  else 0, scrap: if r.scrap > 0 then r.scrap else 0}))",
+          "query": "from(bucket: \"fault_capture\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"reported_defect\")\n  |> filter(fn: (r) => r[\"operation\"] == \"${operation}\")\n  |> filter(fn: (r) => r[\"_field\"] == \"count\")\n  |> keep(columns: [\"_time\",\"_value\",\"outcome\"])\n  |> sum(column: \"_value\")\n  |> pivot(valueColumn: \"_value\", columnKey: [\"outcome\"], rowKey: [])\n  |> map(fn: (r) => ({r with rework: if r.rework > 0 then r.rework  else 0, scrap: if r.scrap > 0 then r.scrap else 0, pass: if r.pass > 0 then r.pass else 0}))",
           "refId": "A"
         }
       ],
       "title": "Overall Totals",
       "transformations": [
         {
-          "id": "configFromData",
+          "id": "organize",
           "options": {
-            "configRefId": "A",
-            "mappings": [
-              {
-                "fieldName": "pass",
-                "handlerKey": "max",
-                "reducerId": "lastNotNull"
-              }
-            ]
-          }
-        },
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "names": [
-                "rework",
-                "scrap"
-              ]
+            "excludeByName": {},
+            "indexByName": {
+              "pass": 0,
+              "rework": 1,
+              "scrap": 2
+            },
+            "renameByName": {
+              "pass": "Pass",
+              "rework": "Rework",
+              "scrap": "Scrap"
             }
           }
         }
@@ -673,8 +699,8 @@
       {
         "current": {
           "selected": true,
-          "text": "30m",
-          "value": "30m"
+          "text": "5m",
+          "value": "5m"
         },
         "hide": 0,
         "includeAll": false,
@@ -721,13 +747,13 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Operation View",
   "uid": "JzdmAQB4k",
-  "version": 12,
+  "version": 7,
   "weekStart": ""
 }
