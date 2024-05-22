@@ -1,12 +1,14 @@
 # Scrap Monitoring Starter Solution
 ## Build
 Generate a random secret key to an environment variable:  
-`setup_keys.sh`  
+`./setup_keys.sh`  
 
 Build using docker:  
 `docker compose build`
+
 ## Run
-Run using the `start.sh` script
+`./start.sh`
+
 ## Usage
 This solution has 3 main pages:
 - Data capture - [http://localhost](http://localhost) on the device (i.e. Raspberry Pi) or http://\<ip\> from other devices on the local network (where \<ip\> is the devices fixed IP address) (e.g. http://192.168.0.1 for IP address 192.168.0.1)
