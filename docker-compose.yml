@@ -1,6 +1,7 @@
 version: '2'
 
 services:
+
     user-input-dc:
         extends:
             file: user_input_dc/app.yml
@@ -17,6 +18,7 @@ services:
         depends_on:
             - "timeseries-db"
             - "reasons-db"
+
     reasons-db:
         extends:
             file: reasons_sds/app.yml
@@ -32,7 +34,7 @@ services:
         env_file:
             - django_secret_key
         restart: unless-stopped
-        
+
     timeseries-db:
         extends:
             file: timeseries_sds/app.yml
@@ -48,6 +50,7 @@ services:
         restart: unless-stopped
         depends_on:
             - "mqtt_broker"
+
     timeseries-db-input:
         extends:
             file: timeseries_sds/app.yml
@@ -64,6 +67,7 @@ services:
         depends_on:
             - "timeseries-db"
             - "mqtt_broker"
+
     mqtt_broker:
         extends:
             file: mqtt_broker/app.yml
@@ -77,6 +81,7 @@ services:
                 options:
                         tag: docker-mqtt-broker
         restart: unless-stopped
+
     dashboard:
         extends:
             file: dashboard_ui/app.yml
@@ -92,6 +97,19 @@ services:
         restart: unless-stopped
         depends_on:
             - "mqtt_broker"
+
+    sds_edit:
+        extends:
+            file: sds_edit/app.yml
+            service: app
+        networks:
+            internal: 
+                aliases: 
+                    - sds-edit.docker.local
+        logging: 
+            driver: syslog
+            options: 
+                tag: docker-sds-edit
 networks:
     internal:
         name: shoestring-internal
