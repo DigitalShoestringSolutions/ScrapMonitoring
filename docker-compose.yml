@@ -110,6 +110,7 @@ services:
             driver: syslog
             options: 
                 tag: docker-sds-edit
+
 networks:
     internal:
         name: shoestring-internal
