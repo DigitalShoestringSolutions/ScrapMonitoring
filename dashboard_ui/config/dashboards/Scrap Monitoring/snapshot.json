@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 5,
+  "id": 2,
   "links": [
     {
       "asDropdown": false,
@@ -58,23 +58,57 @@
               {
                 "color": "red",
                 "value": null
-              },
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "#EAB839",
-                "value": 10
-              },
-              {
-                "color": "orange",
-                "value": 20
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pass"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "rework"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "scrap"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 4,
@@ -111,26 +145,18 @@
       "title": "Totals",
       "transformations": [
         {
-          "id": "configFromData",
+          "id": "organize",
           "options": {
-            "configRefId": "A",
-            "mappings": [
-              {
-                "fieldName": "pass",
-                "handlerKey": "max",
-                "reducerId": "lastNotNull"
-              }
-            ]
-          }
-        },
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "names": [
-                "rework",
-                "scrap"
-              ]
+            "excludeByName": {},
+            "indexByName": {
+              "pass": 0,
+              "rework": 1,
+              "scrap": 2
+            },
+            "renameByName": {
+              "pass": "Pass",
+              "rework": "Rework",
+              "scrap": "Scrap"
             }
           }
         }
@@ -417,6 +443,6 @@
   "timezone": "",
   "title": "Snapshot",
   "uid": "1cOcFU94k",
-  "version": 12,
+  "version": 2,
   "weekStart": ""
 }
