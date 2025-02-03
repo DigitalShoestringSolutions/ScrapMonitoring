@@ -332,7 +332,7 @@
           "refId": "A"
         }
       ],
-      "title": "Last Hours Scrap",
+      "title": "Scrap in Last Hour",
       "transformations": [
         {
           "id": "renameByRegex",
@@ -412,7 +412,7 @@
           "refId": "A"
         }
       ],
-      "title": "Last Hours Rework",
+      "title": "Rework in Last Hour",
       "transformations": [
         {
           "id": "renameByRegex",
@@ -443,6 +443,6 @@
   "timezone": "",
   "title": "Snapshot",
   "uid": "1cOcFU94k",
-  "version": 2,
+  "version": 3,
   "weekStart": ""
 }
